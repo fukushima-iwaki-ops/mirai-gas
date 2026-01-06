@@ -1,0 +1,632 @@
+<script>
+/* =====================================================================
+ * i18n.html — SSoT (English/en) [DATA-ONLY] (NO-OMISSION)
+ * - Text translations: I18N.ui.*
+ * - Legal texts: I18N.legal.<lang>.{termsFull,privacyFull}
+ * - Routing/page keys MUST match Code.gs allow-list exactly:
+ *   index, chat, policy, legal_en, scta, contact
+ * ===================================================================== */
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------------
+  // 0) Utilities (ES5)
+  // ---------------------------------------------------------------
+  function hasOwn_(o, k) { return !!(o && Object.prototype.hasOwnProperty.call(o, k)); }
+  function str_(v) { return (v === null || v === undefined) ? '' : String(v); }
+
+  // ---------------------------------------------------------------
+  // 1) Core I18N Data (NO-OMISSION)
+  // ---------------------------------------------------------------
+  var I18N = {
+    ui: {
+      languages: {
+        ja: "日本語", en: "English", de: "Deutsch", fr: "Français",
+        it: "Italiano", es: "Español", nl: "Nederlands", pt: "Português"
+      },
+      languageNames: {
+        ja: { ja:"日本語",   en:"Japanese",   de:"Japanisch",     fr:"Japonais",      it:"Giapponese",  es:"Japonés",     nl:"Japans",      pt:"Japonês" },
+        en: { ja:"英語",     en:"English",    de:"Englisch",      fr:"Anglais",       it:"Inglese",     es:"Inglés",      nl:"Engels",      pt:"Inglês" },
+        de: { ja:"ドイツ語", en:"German",     de:"Deutsch",       fr:"Allemand",      it:"Tedesco",     es:"Alemán",      nl:"Duits",       pt:"Alemão" },
+        fr: { ja:"フランス語",en:"French",    de:"Französisch",   fr:"Français",      it:"Francese",    es:"Francés",     nl:"Frans",       pt:"Francês" },
+        it: { ja:"イタリア語",en:"Italian",   de:"Italienisch",   fr:"Italien",       it:"Italiano",    es:"Italiano",    nl:"Italiaans",   pt:"Italiano" },
+        es: { ja:"スペイン語",en:"Spanish",   de:"Spanisch",      fr:"Espagnol",      it:"Spagnolo",    es:"Español",     nl:"Spaans",      pt:"Espanhol" },
+        nl: { ja:"オランダ語",en:"Dutch",     de:"Niederländisch",fr:"Néerlandais",   it:"Olandese",    es:"Neerlandés",  nl:"Nederlands",  pt:"Neerlandês" },
+        pt: { ja:"ポルトガル語",en:"Portuguese",de:"Portugiesisch",fr:"Portugais",    it:"Portoghese",  es:"Portugués",   nl:"Portugees",   pt:"Português" }
+      },
+
+      appTitle: {
+        ja: "みらい相談室", en: "Mirai AI Counseling", de: "Mirai AI Counseling", fr: "Mirai AI Counseling",
+        it: "Mirai AI Counseling", es: "Mirai AI Counseling", nl: "Mirai AI Counseling", pt: "Mirai AI Counseling"
+      },
+
+      navHome: { ja:"ホーム", en:"Home", de:"Start", fr:"Accueil", it:"Home", es:"Inicio", nl:"Home", pt:"Início" },
+      navChat: { ja:"相談チャット", en:"Chat", de:"Chat", fr:"Chat", it:"Chat", es:"Chat", nl:"Chat", pt:"Chat" },
+      navPrivacy: { ja:"プライバシー", en:"Privacy", de:"Datenschutz", fr:"Confidentialité", it:"Privacy", es:"Privacidad", nl:"Privacy", pt:"Privacidade" },
+      navLegal: { ja:"国際法務", en:"Legal", de:"Recht", fr:"Juridique", it:"Legale", es:"Legal", nl:"Juridisch", pt:"Legal" },
+      navScta: { ja:"特商法", en:"Commerce", de:"Handel", fr:"Commerce", it:"Commercio", es:"Comercio", nl:"Handel", pt:"Comércio" },
+      navContact: { ja:"お問い合わせ", en:"Contact", de:"Kontakt", fr:"Contact", it:"Contatto", es:"Contacto", nl:"Contact", pt:"Contacto" },
+
+      tagline: {
+        ja:"いつでも、どんなことでも。",
+        en:"Anytime, anything.",
+        de:"Jederzeit, alles.",
+        fr:"À tout moment, quoi qu'il arrive.",
+        it:"In qualsiasi momento, qualsiasi cosa.",
+        es:"En cualquier momento, cualquier cosa.",
+        nl:"Altijd, alles.",
+        pt:"A qualquer momento, qualquer coisa."
+      },
+
+      bubblePrivacy: { ja:"プライバシー\nポリシー", en:"Privacy\nPolicy", de:"Datenschutz", fr:"Confidentialité", it:"Privacy", es:"Privacidad", nl:"Privacy", pt:"Privacidade" },
+      bubbleLegal: { ja:"国際法務", en:"Legal", de:"Recht", fr:"Juridique", it:"Legale", es:"Legal", nl:"Juridisch", pt:"Legal" },
+
+      ctaChat: { ja:"相談する", en:"Start", de:"Start", fr:"Commencer", it:"Inizia", es:"Empezar", nl:"Starten", pt:"Começar" },
+
+      footerNote: {
+        ja:"本サービスはAIによる対話支援です。必要に応じて適切な公的窓口・専門家へご相談ください。",
+        en:"This service provides AI-assisted conversation support. Seek appropriate public resources or professionals when needed.",
+        de:"Dieser Dienst bietet KI-gestützte Gesprächsunterstützung. Wenden Sie sich bei Bedarf an geeignete Stellen oder Fachleute.",
+        fr:"Ce service fournit une assistance de conversation par IA. Consultez des ressources publiques ou des professionnels si nécessaire.",
+        it:"Questo servizio offre supporto conversazionale assistito da IA. Se necessario, contatta un servizio pubblico o professionisti.",
+        es:"Este servicio ofrece apoyo conversacional asistido por IA. Si es necesario, acuda a recursos públicos o profesionales.",
+        nl:"Deze dienst biedt AI-ondersteunde gesprekssteun. Neem indien nodig contact op met publieke hulp of professionals.",
+        pt:"Este serviço oferece suporte conversacional assistido por IA. Procure recursos públicos ou profissionais quando necessário."
+      },
+
+      backHome: { ja:"戻る", en:"Back", de:"Zurück", fr:"Retour", it:"Indietro", es:"Atrás", nl:"Terug", pt:"Voltar" },
+      inputPlaceholder: { ja:"メッセージを入力…", en:"Type your message…", de:"Nachricht eingeben…", fr:"Écrivez…", it:"Scrivi…", es:"Escribe…", nl:"Typ…", pt:"Digite…" },
+      sendButton: { ja:"送信", en:"Send", de:"Send", fr:"Send", it:"Send", es:"Send", nl:"Send", pt:"Send" },
+      error: { ja:"エラーが発生しました", en:"An error occurred", de:"An error occurred", fr:"An error occurred", it:"An error occurred", es:"An error occurred", nl:"An error occurred", pt:"An error occurred" },
+
+      chatTitle: { ja:"相談チャット", en:"Chat", de:"Chat", fr:"Chat", it:"Chat", es:"Chat", nl:"Chat", pt:"Chat" },
+      chatDesc: {
+        ja:"ここでは自由に話せます。送信するとAIが応答します。",
+        en:"You can talk freely here. Send a message and the AI will respond.",
+        de:"Hier können Sie frei sprechen. Senden Sie eine Nachricht, und die KI antwortet.",
+        fr:"Vous pouvez parler librement ici. Envoyez un message et l'IA répondra.",
+        it:"Qui puoi parlare liberamente. Invia un messaggio e l'IA risponderà.",
+        es:"Aquí puedes hablar libremente. Envía un mensaje y la IA responderá.",
+        nl:"Hier kun je vrij praten. Stuur een bericht en de AI reageert.",
+        pt:"Aqui você pode falar livremente. Envie uma mensagem e a IA responderá."
+      },
+
+      privacyTitle: { ja:"プライバシーポリシー", en:"Privacy Policy", de:"Datenschutzrichtlinie", fr:"Politique de confidentialité", it:"Informativa sulla privacy", es:"Política de privacidad", nl:"Privacybeleid", pt:"Política de Privacidade" },
+      privacyLead: {
+        ja:"個人情報・入力データの取り扱いについて定めます。",
+        en:"This policy explains how we handle personal information and user inputs.",
+        de:"Diese Richtlinie erläutert den Umgang mit personenbezogenen Daten und Eingaben.",
+        fr:"Cette politique explique le traitement des données personnelles et des entrées.",
+        it:"Questa informativa spiega come gestiamo i dati personali e gli input.",
+        es:"Esta política explica cómo gestionamos datos personales y entradas.",
+        nl:"Dit beleid legt uit hoe we persoonsgegevens en invoer behandelen.",
+        pt:"Esta política explica como lidamos com dados pessoais e entradas."
+      },
+
+      legalTitle: { ja:"国際法務（英語）", en:"International Legal (English)", de:"Internationales Recht (Englisch)", fr:"Mentions légales (anglais)", it:"Note legali (inglese)", es:"Legal (inglés)", nl:"Juridisch (Engels)", pt:"Legal (inglês)" },
+      legalLead: {
+        ja:"海外向けの利用規約・法務情報（英語）を掲載します。",
+        en:"This page provides Terms and legal information for international users (English).",
+        de:"Diese Seite enthält Nutzungsbedingungen und rechtliche Informationen (Englisch).",
+        fr:"Cette page fournit les conditions et informations juridiques (anglais).",
+        it:"Questa pagina fornisce termini e informazioni legali (inglese).",
+        es:"Esta página proporciona términos e información legal (inglés).",
+        nl:"Deze pagina bevat voorwaarden en juridische informatie (Engels).",
+        pt:"Deze pagina bevat voorwaarden en juridische informatie (Engels)."
+      },
+
+      sctaTitle: {
+        ja:"特定商取引法に基づく表記",
+        en:"Commerce Information",
+        de:"Handelsinformationen",
+        fr:"Informations commerciales",
+        it:"Informazioni commerciali",
+        es:"Información comercial",
+        nl:"Handelsinformatie",
+        pt:"Informações comerciais"
+      },
+      sctaLead: {
+        ja:"日本国内向けの法令に基づく表記です（日本語選択時のみ金額JPY表示）。",
+        en:"Information related to commerce and pricing (USD shown for non-Japanese languages).",
+        de:"Handels- und Preisinformationen (USD bei nicht-japanischer Sprache).",
+        fr:"Informations commerciales et tarifaires (USD si langue non japonaise).",
+        it:"Informazioni commerciali e prezzi (USD se lingua non giapponese).",
+        es:"Información comercial y precios (USD si el idioma no es japonés).",
+        nl:"Handels- en prijsinformatie (USD bij niet-Japans).",
+        pt:"Informações comerciais e preços (USD se o idioma não for japonês)."
+      },
+
+      contactTitle: { ja:"お問い合わせ", en:"Contact", de:"Kontakt", fr:"Contact", it:"Contatto", es:"Contacto", nl:"Contact", pt:"Contacto" },
+      contactLead: {
+        ja:"メール・フォームでお問い合わせください（電話は日本語のみ）。",
+        en:"Contact us by email or the form below (phone support in Japanese only).",
+        de:"Kontakt per E-Mail oder Formular (Telefon nur Japanisch).",
+        fr:"Contactez-nous par e-mail ou via le formulaire (téléphone en japonais uniquement).",
+        it:"Contattaci via email o modulo (telefono solo giapponese).",
+        es:"Contáctanos por correo o formulario (teléfono solo japonés).",
+        nl:"Neem contact op via e-mail of formulier (telefonisch alleen Japans).",
+        pt:"Contate por e-mail ou formulário (telefone apenas em japonês)."
+      },
+      contactEmailK: { ja:"メール", en:"Email", de:"E-Mail", fr:"Email", it:"Email", es:"Correo", nl:"E-mail", pt:"Email" },
+      contactPhoneK: { ja:"電話", en:"Phone", de:"Telefon", fr:"Téléphone", it:"Telefono", es:"Teléfono", nl:"Telefoon", pt:"Telefone" },
+      contactPhoneV: {
+        ja:"0246-88-7369（日本語のみ）",
+        en:"0246-88-7369 (Japanese only)",
+        de:"0246-88-7369 (nur Japanisch)",
+        fr:"0246-88-7369 (japonais uniquement)",
+        it:"0246-88-7369 (solo giapponese)",
+        es:"0246-88-7369 (solo japonés)",
+        nl:"0246-88-7369 (alleen Japans)",
+        pt:"0246-88-7369 (apenas japonês)"
+      },
+
+      contactClientId: { ja:"お名前/ID（任意）", en:"Name/ID (optional)", de:"Name/ID (optional)", fr:"Nom/ID (optionnel)", it:"Nome/ID (opzionale)", es:"Nombre/ID (opcional)", nl:"Naam/ID (optioneel)", pt:"Nome/ID (opcional)" },
+      contactName: { ja:"氏名（任意）", en:"Name (optional)", de:"Name (optional)", fr:"Nom (optionnel)", it:"Nome (opzionale)", es:"Nombre (opcional)", nl:"Naam (optioneel)", pt:"Nome (opcional)" },
+      contactEmail: { ja:"メール（任意）", en:"Email (optional)", de:"E-Mail (optional)", fr:"Email (optionnel)", it:"Email (opzionale)", es:"Correo (opcional)", nl:"E-mail (optioneel)", pt:"Email (opcional)" },
+      contactMsg: { ja:"内容を入力…", en:"Write your message…", de:"Nachricht…", fr:"Écrivez…", it:"Scrivi…", es:"Escribe…", nl:"Schrijf…", pt:"Escreva…" },
+      contactSend: { ja:"送信", en:"Send", de:"Senden", fr:"Envoyer", it:"Invia", es:"Enviar", nl:"Versturen", pt:"Enviar" },
+      contactSent: { ja:"送信しました", en:"Sent", de:"Gesendet", fr:"Envoyé", it:"Inviato", es:"Enviado", nl:"Verzonden", pt:"Enviado" },
+
+      businessInfoTitle: { ja:"事業者情報", en:"Business Information", de:"Anbieterinformationen", fr:"Informations sur l'opérateur", it:"Informazioni sull'operatore", es:"Información del operador", nl:"Bedrijfsinformatie", pt:"Informações do operador" },
+      businessNameK: { ja:"事業者名", en:"Business Name", de:"Anbieter", fr:"Opérateur", it:"Operatore", es:"Operador", nl:"Aanbieder", pt:"Operador" },
+      businessNameV: {
+        ja:"みらい相談室（Mirai Counseling Room）",
+        en:"Mirai Counseling Room",
+        de:"Mirai Counseling Room",
+        fr:"Mirai Counseling Room",
+        it:"Mirai Counseling Room",
+        es:"Mirai Counseling Room",
+        nl:"Mirai Counseling Room",
+        pt:"Mirai Counseling Room"
+      },
+      websiteK: { ja:"公式サイト", en:"Website", de:"Webseite", fr:"Site", it:"Sito", es:"Sitio", nl:"Website", pt:"Site" },
+      contactK: { ja:"連絡先", en:"Contact", de:"Kontakt", fr:"Contact", it:"Contatto", es:"Contacto", nl:"Contact", pt:"Contacto" },
+      pricingK: { ja:"料金", en:"Pricing", de:"Preise", fr:"Tarifs", it:"Prezzi", es:"Precios", nl:"Tarieven", pt:"Preços" },
+      pricingUsdV: {
+        ja:"",
+        en:"Subscription: $30 / month (60h). Add-on: $20 per 20h.",
+        de:"Abo: $30/Monat (60h). Add-on: $20 je 20h.",
+        fr:"Abonnement : 30 $/mois (60h). Option : 20 $ par 20h.",
+        it:"Abbonamento: $30/mese (60h). Extra: $20 ogni 20h.",
+        es:"Suscripción: $30/mes (60h). Extra: $20 por 20h.",
+        nl:"Abonnement: $30/maand (60h). Add-on: $20 per 20h.",
+        pt:"Assinatura: $30/mês (60h). Extra: $20 por 20h."
+      },
+
+      scta: {
+        businessNameK: { ja:"事業者名" },
+        businessNameV: { ja:"みらい相談室（Mirai Counseling Room）" },
+        siteK: { ja:"公式サイト" },
+        emailK: { ja:"メールアドレス" },
+        phoneK: { ja:"電話番号" },
+        phoneV: { ja:"0246-88-7369（日本語のみ）" },
+
+        priceK: { ja:"販売価格" },
+        priceJpyV: { ja:"基本：月額3,000円（60H）。追加：20Hごと2,000円。" },
+
+        paymentK: { ja:"支払方法" },
+        paymentV: { ja:"サブスクリプション（Stripe等）。" },
+
+        provisionK: { ja:"提供時期" },
+        provisionV: { ja:"決済確認後、即時利用可能。" },
+
+        cancelK: { ja:"解約" },
+        cancelV: { ja:"次回更新日前までに所定手続で解約できます。" },
+
+        refundK: { ja:"返金" },
+        refundV: { ja:"サービスの性質上、原則返金不可（法令により必要な場合を除く）。" },
+
+        envK: { ja:"動作環境" },
+        envV: { ja:"最新のChrome/Edge/Safari等、安定した通信環境。" },
+
+        jurisdictionK: { ja:"管轄" },
+        jurisdictionV: { ja:"福島地方裁判所 いわき支部 を第一審の専属的合意管轄裁判所とします。" },
+
+        nonJpNote: {
+          ja:"",
+          en:"For non-Japanese languages, pricing is displayed in USD only (no JPY shown).",
+          de:"Bei nicht-japanischer Sprache werden Preise nur in USD angezeigt (kein JPY).",
+          fr:"Pour les langues non japonaises, les prix sont affichés uniquement en USD (pas de JPY).",
+          it:"Per lingue non giapponesi, i prezzi sono mostrati solo in USD (niente JPY).",
+          es:"Para idiomas no japoneses, los precios se muestran solo en USD (sin JPY).",
+          nl:"Voor niet-Japans worden prijzen alleen in USD getoond (geen JPY).",
+          pt:"Para idiomas não japoneses, os preços são exibidos apenas em USD (sem JPY)."
+        }
+      }
+    },
+
+    // ---------------------------------------------------------------
+    // Legal texts (SSoT keys: termsFull / privacyFull) — 8 languages
+    // ---------------------------------------------------------------
+    legal: {
+      en: {
+        termsFull:
+"TERMS OF SERVICE (International)\n\n" +
+"1) Scope and Acceptance\n" +
+"These Terms govern your use of the Mirai AI Counseling chat service (the “Service”). By accessing or using the Service, you agree to these Terms.\n\n" +
+"2) Service Description\n" +
+"The Service provides AI-assisted conversation support. Responses may be generated by third-party AI models and infrastructure.\n\n" +
+"3) No Professional Advice\n" +
+"The Service does not provide medical, legal, financial, or other professional advice. You must not rely on outputs as a substitute for professional judgment.\n\n" +
+"4) Safety and Emergency Situations\n" +
+"If you believe you are in immediate danger or require urgent help, contact local emergency services or appropriate public support resources. Do not delay seeking help based on Service outputs.\n\n" +
+"5) User Responsibilities\n" +
+"You are responsible for your inputs and your decisions. Do not submit unlawful content, content that violates third-party rights, or content intended to cause harm.\n\n" +
+"6) AI Output Limitations\n" +
+"AI outputs can be incomplete, incorrect, or inappropriate for your situation. You must independently verify critical information.\n\n" +
+"7) Data Handling Overview\n" +
+"Inputs may be transmitted to external AI providers solely to generate responses. See the Privacy Policy for details.\n\n" +
+"8) Intellectual Property\n" +
+"The Service UI and content are protected by applicable laws. Your inputs remain yours; however, you grant the Service a limited right to process them to provide responses.\n\n" +
+"9) Availability and Changes\n" +
+"The Service may be modified, suspended, or discontinued at any time. Features may change without notice.\n\n" +
+"10) Limitation of Liability\n" +
+"To the maximum extent permitted by law, the provider is not liable for any damages arising from your use of the Service or reliance on outputs.\n\n" +
+"11) Governing Law and Venue\n" +
+"These Terms are governed by the laws of Japan. The Fukushima District Court (Iwaki Branch) shall have exclusive jurisdiction as the court of first instance, to the extent permitted by law.\n\n" +
+"12) Contact\n" +
+"For inquiries: fukushima-iwaki@miraicounselingroom.com\n",
+
+        privacyFull:
+"PRIVACY POLICY (International)\n\n" +
+"1) What We Process\n" +
+"We process the text you submit and limited technical metadata necessary to operate the Service.\n\n" +
+"2) Purpose of Processing\n" +
+"Your inputs are processed to provide AI-generated responses and to maintain service quality and security.\n\n" +
+"3) Third-Party AI Providers\n" +
+"To generate responses, inputs may be sent to external AI providers. Their processing may be subject to their own terms and policies.\n\n" +
+"4) Retention\n" +
+"Client-side chat history is used for context during your session. We do not create user profiling databases for advertising.\n\n" +
+"5) Security\n" +
+"We take reasonable measures to protect data; however, no system is perfectly secure.\n\n" +
+"6) Your Requests\n" +
+"For access/deletion requests where applicable, contact the administrator at fukushima-iwaki@miraicounselingroom.com.\n\n" +
+"7) Updates\n" +
+"This Policy may be updated from time to time.\n"
+      },
+
+      ja: {
+        termsFull:
+"利用規約（海外向け／参考訳）\n\n" +
+"1) 適用範囲と同意\n" +
+"本規約は、Mirai AI Counseling のチャットサービス（以下「本サービス」）の利用条件を定めるものです。本サービスにアクセスまたは利用した時点で、利用者は本規約に同意したものとします。\n\n" +
+"2) サービス内容\n" +
+"本サービスは、AIを用いた対話支援を提供します。回答は、第三者のAIモデルおよびインフラにより生成される場合があります。\n\n" +
+"3) 専門的助言の不提供\n" +
+"本サービスは、医療、法律、金融その他の専門的助言を提供しません。本サービスの出力を、専門家の判断の代替として依拠しないでください。\n\n" +
+"4) 安全・緊急時\n" +
+"差し迫った危険がある、または緊急の支援が必要だと考える場合は、地域の緊急通報・公的支援機関等へ連絡してください。本サービスの出力を理由に支援要請を遅らせないでください。\n\n" +
+"5) 利用者の責任\n" +
+"利用者は入力内容および意思決定について責任を負います。違法な内容、第三者の権利を侵害する内容、害を与える意図の内容を送信しないでください。\n\n" +
+"6) AI出力の限界\n" +
+"AI出力は、不完全・不正確・状況不適合である場合があります。重要な事項は利用者自身で検証してください。\n\n" +
+"7) データ取扱いの概要\n" +
+"回答生成のため、入力が外部AI提供者へ送信される場合があります。詳細はプライバシーポリシーをご確認ください。\n\n" +
+"8) 知的財産\n" +
+"本サービスのUI・コンテンツは法令により保護されます。入力内容の権利は利用者に留保されますが、回答提供のために処理する限定的な権利を本サービスに許諾します。\n\n" +
+"9) 提供の変更\n" +
+"本サービスは、予告なく変更・停止・終了される場合があります。機能は事前通知なく変更されることがあります。\n\n" +
+"10) 責任制限\n" +
+"法令で許容される最大限の範囲において、本サービスの利用または出力への依拠に起因する損害について、提供者は責任を負いません。\n\n" +
+"11) 準拠法・裁判管轄\n" +
+"本規約は日本法に準拠します。法令で許容される範囲において、福島地方裁判所いわき支部を第一審の専属的合意管轄裁判所とします。\n\n" +
+"12) 連絡先\n" +
+"お問い合わせ：fukushima-iwaki@miraicounselingroom.com\n",
+
+        privacyFull:
+"プライバシーポリシー（海外向け／参考訳）\n\n" +
+"1) 取り扱う情報\n" +
+"当方は、利用者が送信するテキストおよび本サービス運用に必要な最小限の技術的メタデータを取り扱います。\n\n" +
+"2) 取扱い目的\n" +
+"入力は、AIによる回答提供、品質維持、セキュリティ確保のために処理されます。\n\n" +
+"3) 第三者AI提供者\n" +
+"回答生成のため、入力が外部AI提供者へ送信される場合があります。外部提供者の取扱いは当該提供者の規約・ポリシーの適用を受ける場合があります。\n\n" +
+"4) 保管・保持\n" +
+"クライアント側のチャット履歴は、セッション中の文脈提供に利用されます。当方は広告目的のプロファイリング用データベースを作成しません。\n\n" +
+"5) 安全管理\n" +
+"合理的な安全対策を講じますが、あらゆるシステムが完全に安全であることは保証できません。\n\n" +
+"6) 開示・削除等の請求\n" +
+"適用される範囲での開示・削除等のご要望は、管理者（fukushima-iwaki@miraicounselingroom.com）までご連絡ください。\n\n" +
+"7) 改定\n" +
+"本ポリシーは随時更新される場合があります。\n"
+      },
+
+      de: {
+        termsFull:
+"NUTZUNGSBEDINGUNGEN (International)\n\n" +
+"1) Geltungsbereich und Zustimmung\n" +
+"Diese Bedingungen regeln Ihre Nutzung des Mirai AI Counseling Chat-Dienstes (der „Dienst“). Durch Zugriff oder Nutzung stimmen Sie diesen Bedingungen zu.\n\n" +
+"2) Leistungsbeschreibung\n" +
+"Der Dienst bietet KI-gestützte Gesprächsunterstützung. Antworten können durch KI-Modelle und Infrastruktur von Drittanbietern erzeugt werden.\n\n" +
+"3) Keine professionelle Beratung\n" +
+"Der Dienst bietet keine medizinische, rechtliche, finanzielle oder sonstige professionelle Beratung. Verlassen Sie sich nicht auf Ausgaben als Ersatz für fachliche Beurteilung.\n\n" +
+"4) Sicherheit und Notfälle\n" +
+"Bei unmittelbarer Gefahr oder dringendem Hilfebedarf wenden Sie sich an lokale Notdienste oder geeignete öffentliche Unterstützungsstellen. Verzögern Sie Hilfe nicht aufgrund von Dienstausgaben.\n\n" +
+"5) Pflichten der Nutzer\n" +
+"Sie sind für Ihre Eingaben und Entscheidungen verantwortlich. Übermitteln Sie keine rechtswidrigen Inhalte, keine Inhalte, die Rechte Dritter verletzen, und keine Inhalte mit Schädigungsabsicht.\n\n" +
+"6) Grenzen von KI-Ausgaben\n" +
+"KI-Ausgaben können unvollständig, falsch oder für Ihre Situation ungeeignet sein. Überprüfen Sie kritische Informationen eigenständig.\n\n" +
+"7) Überblick zur Datenverarbeitung\n" +
+"Eingaben können ausschließlich zur Antwortgenerierung an externe KI-Anbieter übertragen werden. Siehe Datenschutzerklärung für Details.\n\n" +
+"8) Geistiges Eigentum\n" +
+"UI und Inhalte des Dienstes sind rechtlich geschützt. Ihre Eingaben bleiben Ihre; Sie räumen jedoch ein begrenztes Recht zur Verarbeitung zur Bereitstellung von Antworten ein.\n\n" +
+"9) Verfügbarkeit und Änderungen\n" +
+"Der Dienst kann jederzeit geändert, ausgesetzt oder eingestellt werden. Funktionen können ohne Vorankündigung geändert werden.\n\n" +
+"10) Haftungsbeschränkung\n" +
+"Soweit gesetzlich zulässig, haftet der Anbieter nicht für Schäden aus Ihrer Nutzung des Dienstes oder dem Vertrauen auf Ausgaben.\n\n" +
+"11) Anwendbares Recht und Gerichtsstand\n" +
+"Diese Bedingungen unterliegen dem Recht Japans. Das Bezirksgericht Fukushima (Zweigstelle Iwaki) ist, soweit zulässig, ausschließlich zuständig in erster Instanz.\n\n" +
+"12) Kontakt\n" +
+"Anfragen: fukushima-iwaki@miraicounselingroom.com\n",
+
+        privacyFull:
+"DATENSCHUTZERKLÄRUNG (International)\n\n" +
+"1) Was wir verarbeiten\n" +
+"Wir verarbeiten den von Ihnen übermittelten Text sowie begrenzte technische Metadaten, die für den Betrieb erforderlich sind.\n\n" +
+"2) Zweck der Verarbeitung\n" +
+"Ihre Eingaben werden verarbeitet, um KI-Antworten bereitzustellen und Qualität sowie Sicherheit des Dienstes zu gewährleisten.\n\n" +
+"3) Externe KI-Anbieter\n" +
+"Zur Antwortgenerierung können Eingaben an externe KI-Anbieter gesendet werden. Deren Verarbeitung kann eigenen Bedingungen/Policies unterliegen.\n\n" +
+"4) Aufbewahrung\n" +
+"Clientseitige Chat-Historie dient während Ihrer Sitzung als Kontext. Wir erstellen keine Profiling-Datenbanken für Werbung.\n\n" +
+"5) Sicherheit\n" +
+"Wir ergreifen angemessene Maßnahmen; dennoch ist kein System vollkommen sicher.\n\n" +
+"6) Ihre Anfragen\n" +
+"Für Auskunft/Löschung, soweit anwendbar, kontaktieren Sie den Administrator: fukushima-iwaki@miraicounselingroom.com.\n\n" +
+"7) Aktualisierungen\n" +
+"Diese Erklärung kann von Zeit zu Zeit aktualisiert werden.\n"
+      },
+
+      fr: {
+        termsFull:
+"CONDITIONS D’UTILISATION (International)\n\n" +
+"1) Champ d’application et acceptation\n" +
+"Les présentes conditions régissent votre utilisation du service de chat Mirai AI Counseling (le « Service »). En y accédant ou en l’utilisant, vous acceptez ces conditions.\n\n" +
+"2) Description du Service\n" +
+"Le Service fournit un soutien conversationnel assisté par IA. Les réponses peuvent être générées par des modèles et une infrastructure d’IA tiers.\n\n" +
+"3) Absence de conseil professionnel\n" +
+"Le Service ne fournit pas de conseils médicaux, juridiques, financiers ou autres. Vous ne devez pas vous fier aux sorties comme substitut au jugement d’un professionnel.\n\n" +
+"4) Sécurité et situations d’urgence\n" +
+"En cas de danger immédiat ou de besoin d’aide urgente, contactez les services d’urgence locaux ou des ressources publiques appropriées. Ne retardez pas la recherche d’aide en raison des sorties du Service.\n\n" +
+"5) Responsabilités de l’utilisateur\n" +
+"Vous êtes responsable de vos entrées et de vos décisions. N’envoyez pas de contenu illégal, portant atteinte aux droits de tiers ou destiné à nuire.\n\n" +
+"6) Limites des sorties IA\n" +
+"Les sorties IA peuvent être incomplètes, incorrectes ou inadaptées à votre situation. Vérifiez indépendamment les informations critiques.\n\n" +
+"7) Aperçu du traitement des données\n" +
+"Les entrées peuvent être transmises à des fournisseurs d’IA externes uniquement pour générer des réponses. Voir la Politique de confidentialité pour les détails.\n\n" +
+"8) Propriété intellectuelle\n" +
+"L’interface et le contenu du Service sont protégés. Vos entrées restent les vôtres ; vous accordez toutefois un droit limité de les traiter pour fournir des réponses.\n\n" +
+"9) Disponibilité et modifications\n" +
+"Le Service peut être modifié, suspendu ou interrompu à tout moment. Des fonctionnalités peuvent changer sans préavis.\n\n" +
+"10) Limitation de responsabilité\n" +
+"Dans la mesure permise par la loi, le fournisseur n’est pas responsable des dommages liés à l’utilisation du Service ou à la confiance accordée aux sorties.\n\n" +
+"11) Droit applicable et juridiction\n" +
+"Les présentes conditions sont régies par le droit japonais. Le tribunal de district de Fukushima (branche d’Iwaki) est compétent en première instance, dans la mesure permise.\n\n" +
+"12) Contact\n" +
+"Demandes : fukushima-iwaki@miraicounselingroom.com\n",
+
+        privacyFull:
+"POLITIQUE DE CONFIDENTIALITÉ (International)\n\n" +
+"1) Ce que nous traitons\n" +
+"Nous traitons le texte que vous soumettez et des métadonnées techniques limitées nécessaires au fonctionnement du Service.\n\n" +
+"2) Finalités\n" +
+"Vos entrées sont traitées pour fournir des réponses générées par IA et maintenir la qualité et la sécurité du Service.\n\n" +
+"3) Fournisseurs d’IA tiers\n" +
+"Pour générer des réponses, les entrées peuvent être envoyées à des fournisseurs d’IA externes. Leur traitement peut être soumis à leurs propres conditions et politiques.\n\n" +
+"4) Conservation\n" +
+"L’historique de chat côté client est utilisé comme contexte pendant votre session. Nous ne créons pas de bases de données de profilage publicitaire.\n\n" +
+"5) Sécurité\n" +
+"Nous prenons des mesures raisonnables, mais aucun système n’est parfaitement sûr.\n\n" +
+"6) Vos demandes\n" +
+"Pour l’accès/la suppression, le cas échéant, contactez l’administrateur : fukushima-iwaki@miraicounselingroom.com.\n\n" +
+"7) Mises à jour\n" +
+"Cette politique peut être mise à jour périodiquement.\n"
+      },
+
+      it: {
+        termsFull:
+"TERMINI DI SERVIZIO (Internazionale)\n\n" +
+"1) Ambito e accettazione\n" +
+"Questi Termini disciplinano l’uso del servizio di chat Mirai AI Counseling (il “Servizio”). Accedendo o utilizzando il Servizio, accetti questi Termini.\n\n" +
+"2) Descrizione del Servizio\n" +
+"Il Servizio fornisce supporto conversazionale assistito da IA. Le risposte possono essere generate da modelli e infrastrutture IA di terze parti.\n\n" +
+"3) Nessuna consulenza professionale\n" +
+"Il Servizio non fornisce consulenza medica, legale, finanziaria o di altro tipo. Non fare affidamento sugli output come sostituto del giudizio professionale.\n\n" +
+"4) Sicurezza ed emergenze\n" +
+"Se ritieni di essere in pericolo immediato o di aver bisogno di aiuto urgente, contatta i servizi di emergenza locali o risorse pubbliche adeguate. Non ritardare la richiesta di aiuto basandoti sugli output del Servizio.\n\n" +
+"5) Responsabilità dell’utente\n" +
+"Sei responsabile dei tuoi input e delle tue decisioni. Non inviare contenuti illegali, che violano diritti di terzi o destinati a causare danni.\n\n" +
+"6) Limiti degli output IA\n" +
+"Gli output IA possono essere incompleti, errati o inappropriati per la tua situazione. Verifica in modo indipendente le informazioni critiche.\n\n" +
+"7) Panoramica sul trattamento dei dati\n" +
+"Gli input possono essere trasmessi a fornitori IA esterni esclusivamente per generare risposte. Consulta la Privacy Policy per i dettagli.\n\n" +
+"8) Proprietà intellettuale\n" +
+"UI e contenuti del Servizio sono protetti. I tuoi input restano tuoi; concedi tuttavia un diritto limitato a trattarli per fornire risposte.\n\n" +
+"9) Disponibilità e modifiche\n" +
+"Il Servizio può essere modificato, sospeso o interrotto in qualsiasi momento. Le funzionalità possono cambiare senza preavviso.\n\n" +
+"10) Limitazione di responsabilità\n" +
+"Nei limiti massimi consentiti dalla legge, il fornitore non è responsabile per danni derivanti dall’uso del Servizio o dall’affidamento sugli output.\n\n" +
+"11) Legge applicabile e foro competente\n" +
+"Questi Termini sono regolati dalle leggi del Giappone. Il Tribunale distrettuale di Fukushima (sede di Iwaki) ha giurisdizione esclusiva in primo grado, nei limiti consentiti.\n\n" +
+"12) Contatti\n" +
+"Per richieste: fukushima-iwaki@miraicounselingroom.com\n",
+
+        privacyFull:
+"INFORMATIVA SULLA PRIVACY (Internazionale)\n\n" +
+"1) Cosa trattiamo\n" +
+"Trattiamo il testo inviato e metadati tecnici limitati necessari al funzionamento del Servizio.\n\n" +
+"2) Finalità del trattamento\n" +
+"Gli input sono trattati per fornire risposte IA e mantenere qualità e sicurezza del Servizio.\n\n" +
+"3) Fornitori IA di terze parti\n" +
+"Per generare risposte, gli input possono essere inviati a fornitori IA esterni, soggetti a proprie condizioni e policy.\n\n" +
+"4) Conservazione\n" +
+"La cronologia chat lato client è usata come contesto durante la sessione. Non creiamo database di profilazione per pubblicità.\n\n" +
+"5) Sicurezza\n" +
+"Adottiamo misure ragionevoli, ma nessun sistema è perfettamente sicuro.\n\n" +
+"6) Le tue richieste\n" +
+"Per accesso/cancellazione ove applicabile, contatta l’amministratore: fukushima-iwaki@miraicounselingroom.com.\n\n" +
+"7) Aggiornamenti\n" +
+"Questa informativa può essere aggiornata periodicamente.\n"
+      },
+
+      es: {
+        termsFull:
+"TÉRMINOS DE SERVICIO (Internacional)\n\n" +
+"1) Alcance y aceptación\n" +
+"Estos Términos rigen el uso del servicio de chat Mirai AI Counseling (el “Servicio”). Al acceder o utilizar el Servicio, usted acepta estos Términos.\n\n" +
+"2) Descripción del Servicio\n" +
+"El Servicio proporciona apoyo conversacional asistido por IA. Las respuestas pueden generarse mediante modelos e infraestructura de IA de terceros.\n\n" +
+"3) Sin asesoramiento profesional\n" +
+"El Servicio no ofrece asesoramiento médico, legal, financiero u otro profesional. No debe confiar en los resultados como sustituto del criterio profesional.\n\n" +
+"4) Seguridad y emergencias\n" +
+"Si cree que está en peligro inmediato o necesita ayuda urgente, contacte con servicios de emergencia locales o recursos públicos adecuados. No retrase la búsqueda de ayuda por los resultados del Servicio.\n\n" +
+"5) Responsabilidades del usuario\n" +
+"Usted es responsable de sus entradas y decisiones. No envíe contenido ilegal, que infrinja derechos de terceros o destinado a causar daño.\n\n" +
+"6) Limitaciones de la IA\n" +
+"Los resultados pueden ser incompletos, incorrectos o inapropiados. Verifique de forma independiente la información crítica.\n\n" +
+"7) Resumen del tratamiento de datos\n" +
+"Las entradas pueden transmitirse a proveedores externos de IA solo para generar respuestas. Consulte la Política de Privacidad para más detalles.\n\n" +
+"8) Propiedad intelectual\n" +
+"La interfaz y el contenido del Servicio están protegidos. Sus entradas siguen siendo suyas; concede un derecho limitado para procesarlas y proporcionar respuestas.\n\n" +
+"9) Disponibilidad y cambios\n" +
+"El Servicio puede modificarse, suspenderse o discontinuarse en cualquier momento. Las funciones pueden cambiar sin aviso.\n\n" +
+"10) Limitación de responsabilidad\n" +
+"En la máxima medida permitida por la ley, el proveedor no es responsable de daños por el uso del Servicio o por confiar en los resultados.\n\n" +
+"11) Ley aplicable y jurisdicción\n" +
+"Estos Términos se rigen por las leyes de Japón. El Tribunal de Distrito de Fukushima (Sucursal de Iwaki) tendrá jurisdicción exclusiva en primera instancia, en la medida permitida.\n\n" +
+"12) Contacto\n" +
+"Consultas: fukushima-iwaki@miraicounselingroom.com\n",
+
+        privacyFull:
+"POLÍTICA DE PRIVACIDAD (Internacional)\n\n" +
+"1) Qué procesamos\n" +
+"Procesamos el texto que envía y metadatos técnicos limitados necesarios para operar el Servicio.\n\n" +
+"2) Finalidad\n" +
+"Sus entradas se procesan para proporcionar respuestas de IA y mantener la calidad y seguridad del Servicio.\n\n" +
+"3) Proveedores de IA de terceros\n" +
+"Para generar respuestas, las entradas pueden enviarse a proveedores externos de IA, sujetos a sus propios términos y políticas.\n\n" +
+"4) Retención\n" +
+"El historial de chat del lado del cliente se utiliza como contexto durante su sesión. No creamos bases de datos de perfilado para publicidad.\n\n" +
+"5) Seguridad\n" +
+"Tomamos medidas razonables; sin embargo, ningún sistema es perfectamente seguro.\n\n" +
+"6) Sus solicitudes\n" +
+"Para solicitudes de acceso/eliminación cuando corresponda, contacte al administrador: fukushima-iwaki@miraicounselingroom.com.\n\n" +
+"7) Actualizaciones\n" +
+"Esta política puede actualizarse periódicamente.\n"
+      },
+
+      nl: {
+        termsFull:
+"GEBRUIKSVOORWAARDEN (Internationaal)\n\n" +
+"1) Reikwijdte en aanvaarding\n" +
+"Deze voorwaarden regelen uw gebruik van de Mirai AI Counseling chatdienst (de “Dienst”). Door toegang of gebruik gaat u akkoord met deze voorwaarden.\n\n" +
+"2) Dienstomschrijving\n" +
+"De Dienst biedt AI-ondersteunde gesprekssteun. Antwoorden kunnen worden gegenereerd door AI-modellen en infrastructuur van derden.\n\n" +
+"3) Geen professioneel advies\n" +
+"De Dienst biedt geen medisch, juridisch, financieel of ander professioneel advies. Vertrouw niet op outputs als vervanging van professioneel oordeel.\n\n" +
+"4) Veiligheid en noodgevallen\n" +
+"Bij direct gevaar of dringende hulp: neem contact op met lokale hulpdiensten of passende publieke ondersteuning. Stel hulp niet uit vanwege Dienst-outputs.\n\n" +
+"5) Verantwoordelijkheden van de gebruiker\n" +
+"U bent verantwoordelijk voor uw invoer en beslissingen. Dien geen onwettige inhoud in, geen inhoud die rechten van derden schendt, en geen inhoud met schadelijke intentie.\n\n" +
+"6) Beperkingen van AI-outputs\n" +
+"AI-outputs kunnen onvolledig, onjuist of ongeschikt zijn. Verifieer kritieke informatie zelfstandig.\n\n" +
+"7) Overzicht gegevensverwerking\n" +
+"Invoer kan uitsluitend voor het genereren van antwoorden naar externe AI-aanbieders worden verzonden. Zie de Privacy Policy voor details.\n\n" +
+"8) Intellectueel eigendom\n" +
+"De UI en inhoud zijn wettelijk beschermd. Uw invoer blijft van u; u verleent een beperkt recht om deze te verwerken voor antwoorden.\n\n" +
+"9) Beschikbaarheid en wijzigingen\n" +
+"De Dienst kan op elk moment worden gewijzigd, opgeschort of beëindigd. Functies kunnen zonder kennisgeving wijzigen.\n\n" +
+"10) Aansprakelijkheidsbeperking\n" +
+"Voor zover wettelijk toegestaan is de aanbieder niet aansprakelijk voor schade door gebruik van de Dienst of vertrouwen op outputs.\n\n" +
+"11) Toepasselijk recht en forum\n" +
+"Deze voorwaarden vallen onder Japans recht. De rechtbank Fukushima (Iwaki Branch) heeft exclusieve bevoegdheid in eerste aanleg, voor zover toegestaan.\n\n" +
+"12) Contact\n" +
+"Vragen: fukushima-iwaki@miraicounselingroom.com\n",
+
+        privacyFull:
+"PRIVACYBELEID (Internationaal)\n\n" +
+"1) Wat wij verwerken\n" +
+"Wij verwerken de tekst die u indient en beperkte technische metadata die nodig is om de Dienst te laten functioneren.\n\n" +
+"2) Doel van verwerking\n" +
+"Invoer wordt verwerkt om AI-antwoorden te leveren en kwaliteit en veiligheid te waarborgen.\n\n" +
+"3) Externe AI-aanbieders\n" +
+"Voor het genereren van antwoorden kan invoer naar externe AI-aanbieders worden verzonden, onder hun eigen voorwaarden en beleid.\n\n" +
+"4) Bewaring\n" +
+"Chatgeschiedenis aan clientzijde wordt gebruikt als context tijdens uw sessie. Wij maken geen advertentieprofiel-databases.\n\n" +
+"5) Beveiliging\n" +
+"Wij nemen redelijke maatregelen, maar geen systeem is perfect veilig.\n\n" +
+"6) Uw verzoeken\n" +
+"Voor inzage/verwijdering waar van toepassing: neem contact op met de beheerder via fukushima-iwaki@miraicounselingroom.com.\n\n" +
+"7) Updates\n" +
+"Dit beleid kan van tijd tot tijd worden bijgewerkt.\n"
+      },
+
+      pt: {
+        termsFull:
+"TERMOS DE SERVIÇO (Internacional)\n\n" +
+"1) Escopo e aceitação\n" +
+"Estes Termos regem o uso do serviço de chat Mirai AI Counseling (o “Serviço”). Ao acessar ou utilizar o Serviço, você concorda com estes Termos.\n\n" +
+"2) Descrição do Serviço\n" +
+"O Serviço fornece suporte conversacional assistido por IA. As respostas podem ser geradas por modelos e infraestrutura de IA de terceiros.\n\n" +
+"3) Sem aconselhamento profissional\n" +
+"O Serviço não fornece aconselhamento médico, jurídico, financeiro ou outro profissional. Não confie nas saídas como substituto de julgamento profissional.\n\n" +
+"4) Segurança e emergências\n" +
+"Se você acredita estar em perigo imediato ou precisar de ajuda urgente, contate os serviços de emergência locais ou recursos públicos apropriados. Não adie a busca por ajuda com base nas saídas do Serviço.\n\n" +
+"5) Responsabilidades do usuário\n" +
+"Você é responsável por suas entradas e decisões. Não envie conteúdo ilegal, que viole direitos de terceiros ou com intenção de causar dano.\n\n" +
+"6) Limitações das saídas de IA\n" +
+"As saídas podem ser incompletas, incorretas ou inadequadas. Verifique independentemente informações críticas.\n\n" +
+"7) Visão geral do tratamento de dados\n" +
+"As entradas podem ser transmitidas a provedores externos de IA somente para gerar respostas. Veja a Política de Privacidade para detalhes.\n\n" +
+"8) Propriedade intelectual\n" +
+"A UI e o conteúdo do Serviço são protegidos. Suas entradas permanecem suas; você concede um direito limitado para processá-las e fornecer respostas.\n\n" +
+"9) Disponibilidade e alterações\n" +
+"O Serviço pode ser modificado, suspenso ou descontinuado a qualquer momento. Recursos podem mudar sem aviso.\n\n" +
+"10) Limitação de responsabilidade\n" +
+"Na máxima extensão permitida por lei, o provedor não é responsável por danos decorrentes do uso do Serviço ou da confiança nas saídas.\n\n" +
+"11) Lei aplicável e foro\n" +
+"Estes Termos são regidos pelas leis do Japão. O Tribunal Distrital de Fukushima (Iwaki Branch) terá jurisdição exclusiva em primeira instância, na medida permitida.\n\n" +
+"12) Contato\n" +
+"Para consultas: fukushima-iwaki@miraicounselingroom.com\n",
+
+        privacyFull:
+"POLÍTICA DE PRIVACIDADE (Internacional)\n\n" +
+"1) O que processamos\n" +
+"Processamos o texto enviado e metadados técnicos limitados necessários para operar o Serviço.\n\n" +
+"2) Finalidade do processamento\n" +
+"Suas entradas são processadas para fornecer respostas de IA e manter a qualidade e a segurança do Serviço.\n\n" +
+"3) Provedores de IA de terceiros\n" +
+"Para gerar respostas, as entradas podem ser enviadas a provedores externos de IA, sujeitos a seus próprios termos e políticas.\n\n" +
+"4) Retenção\n" +
+"O histórico de chat no cliente é usado como contexto durante a sessão. Não criamos bases de dados de perfil para publicidade.\n\n" +
+"5) Segurança\n" +
+"Tomamos medidas razoáveis; contudo, nenhum sistema é perfeitamente seguro.\n\n" +
+"6) Suas solicitações\n" +
+"Para solicitações de acesso/exclusão quando aplicável, contate o administrador: fukushima-iwaki@miraicounselingroom.com.\n\n" +
+"7) Atualizações\n" +
+"Esta política pode ser atualizada periodicamente.\n"
+      }
+    }
+  };
+
+  // ---------------------------------------------------------------
+  // 2) Routing SSoT (MUST match Code.gs allow-list)
+  // ---------------------------------------------------------------
+  I18N.route = {
+    pages: {
+      home: 'index',
+      chat: 'chat',
+      privacy: 'policy',
+      legal: 'legal_en',
+      scta: 'scta',
+      contact: 'contact'
+    }
+  };
+
+  // ---------------------------------------------------------------
+  // Export (DATA ONLY)
+  // ---------------------------------------------------------------
+  window.I18N = I18N;
+
+})();
+</script>

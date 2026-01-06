@@ -1,0 +1,67 @@
+<!-- [FILE: policy.html] -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <?!= include('style'); ?>
+  <?!= include('i18n'); ?>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-badge" aria-hidden="true"></div>
+      <span data-i18n="ui.appTitle"></span>
+    </div>
+
+    <nav class="nav" aria-label="nav">
+      <a href="?page=index" data-i18n="ui.navHome"></a>
+      <a href="?page=chat" data-i18n="ui.navChat"></a>
+      <a href="?page=policy" data-i18n="ui.navPrivacy"></a>
+      <a href="?page=legal_en" data-i18n="ui.navLegal"></a>
+      <a href="?page=scta" data-i18n="ui.navScta"></a>
+      <a href="?page=contact" data-i18n="ui.navContact"></a>
+    </nav>
+
+    <!-- MUST: #langSelect in header (system-wide unified DOM skeleton) -->
+    <div class="lang-panel" aria-label="Language">
+      <div class="lang-caret" aria-hidden="true"></div>
+      <div class="lang-head">
+        <div class="label" data-i18n="ui.languages.en"></div>
+        <div class="check" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path fill="currentColor" d="M9.0 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+          </svg>
+        </div>
+      </div>
+      <div style="padding:12px 14px; border-top:1px solid rgba(255,255,255,.08);">
+        <select id="langSelect" class="input" aria-label="language"></select>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="card">
+    <h1 class="h1" data-i18n="ui.privacyTitle"></h1>
+    <p class="p" data-i18n="ui.privacyLead"></p>
+    <hr class="sep">
+
+    <!-- Privacy text injected by scripts.html from i18n.html (English fixed SSoT: I18N.legal.en.privacyFull) -->
+    <pre class="p prewrap" data-i18n-legal="privacyFull"></pre>
+
+    <hr class="sep">
+    <a class="btn" href="?page=index" data-i18n="ui.backHome"></a>
+  </div>
+
+  <div class="footer">
+    <div data-i18n="ui.footerNote"></div>
+  </div>
+</main>
+
+<?!= include('scripts'); ?>
+</body>
+</html>

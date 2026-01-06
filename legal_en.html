@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <?!= include('style'); ?>
+  <?!= include('i18n'); ?>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-badge" aria-hidden="true"></div>
+      <span data-i18n="ui.appTitle"></span>
+    </div>
+    <nav class="nav">
+      <a href="?page=index" data-i18n="ui.navHome"></a>
+      <a href="?page=chat" data-i18n="ui.navChat"></a>
+      <a href="?page=policy" data-i18n="ui.navPrivacy"></a>
+      <a href="?page=scta" data-i18n="ui.navScta"></a>
+      <a href="?page=contact" data-i18n="ui.navContact"></a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="card">
+    <h1 class="h1" data-i18n="ui.legalTitle"></h1>
+    <p class="p" data-i18n="ui.legalLead"></p>
+    <hr class="sep">
+
+    <!-- Legal body injected by scripts.html using i18n.html -->
+    <pre class="p prewrap" data-i18n-legal="termsFull"></pre>
+
+    <hr class="sep">
+    <div class="h2" data-i18n="ui.businessInfoTitle"></div>
+    <div class="kv">
+      <div class="kv-row">
+        <div class="kv-k" data-i18n="ui.businessNameK"></div>
+        <div class="kv-v" data-i18n="ui.businessNameV"></div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-k" data-i18n="ui.websiteK"></div>
+        <div class="kv-v">https://mirai-sodan.com</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-k" data-i18n="ui.contactK"></div>
+        <div class="kv-v">fukushima-iwaki@miraicounselingroom.com</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-k" data-i18n="ui.pricingK"></div>
+        <div class="kv-v" data-i18n="ui.pricingUsdV" data-currency="USD"></div>
+      </div>
+    </div>
+
+    <hr class="sep">
+    <a class="btn" href="?page=index" data-i18n="ui.backHome"></a>
+  </div>
+
+  <div class="footer">
+    <div data-i18n="ui.footerNote"></div>
+  </div>
+</main>
+
+<?!= include('scripts'); ?>
+</body>
+</html>

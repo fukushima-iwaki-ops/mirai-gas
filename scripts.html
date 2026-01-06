@@ -1,0 +1,391 @@
+<script>
+/* =====================================================================
+ * scripts.html — PERFECT MASTER (FULL/CLOSED) [REVISED]
+ * - 8 langs fixed: en/ja/de/fr/it/es/nl/pt  (DO NOT CHANGE)
+ * - Routing: ALWAYS ?page=xxx&lang=yy (keep page on lang change)
+ * - i18n: data-i18n + data-i18n-mode="placeholder"
+ * - SCTA: visible ONLY when lang=ja (ROBUST: direct access blocked)
+ * - Link normalize: internal links containing "?page=" (absolute ok, same-host only)
+ * - Link normalize (CLICK-TIME): dynamic links covered (FAIL -> ZERO)
+ * - Lang panel label: shows CURRENT language name (not fixed "English")
+ * - Chat DOM matches style: .msg > .role + .text
+ * ===================================================================== */
+(function () {
+  'use strict';
+
+  function hasOwn_(o, k) { return !!(o && Object.prototype.hasOwnProperty.call(o, k)); }
+  function str_(v) { return (v === null || v === undefined) ? '' : String(v); }
+
+  /* -------------------------------------------------------------
+   * HARD allow-list (8 languages, fixed order)  [DO NOT CHANGE]
+   * ----------------------------------------------------------- */
+  var LANGS_ = ['en','ja','de','fr','it','es','nl','pt'];
+
+  function isAllowedLang_(l){
+    var s = String(l || '').toLowerCase();
+    for (var i=0;i<LANGS_.length;i++){ if (LANGS_[i] === s) return true; }
+    return false;
+  }
+  function normalizeLang_(l){
+    var s = String(l || '').toLowerCase();
+    return isAllowedLang_(s) ? s : 'en';
+  }
+
+  /* -------------------------------------------------------------
+   * Lang (query > localStorage > default en)
+   * ----------------------------------------------------------- */
+  function getLang_() {
+    try {
+      var qs = (location && location.search) ? location.search : '';
+      var m = qs.match(/[?&]lang=([a-z]{2})/i);
+      if (m && m[1]) return normalizeLang_(m[1]);
+    } catch (_) {}
+    try {
+      var ls = localStorage.getItem('mirai_lang');
+      if (ls) return normalizeLang_(ls);
+    } catch (_) {}
+    return 'en';
+  }
+
+  function setLang_(lang) {
+    var l = normalizeLang_(lang);
+    try { localStorage.setItem('mirai_lang', l); } catch (_) {}
+    return l;
+  }
+
+  /* -------------------------------------------------------------
+   * Page (query > fallback index) — MUST match Code.gs allow-list
+   * ----------------------------------------------------------- */
+  function getPage_() {
+    try {
+      var qs = (location && location.search) ? location.search : '';
+      var m = qs.match(/[?&]page=([^&]+)/i);
+      if (m && m[1]) return decodeURIComponent(String(m[1]));
+    } catch (_) {}
+    return 'index';
+  }
+
+  function isAllowedPage_(p) {
+    return (
+      p === 'index' ||
+      p === 'chat' ||
+      p === 'policy' ||
+      p === 'legal_en' ||
+      p === 'scta' ||
+      p === 'contact'
+    );
+  }
+
+  function href_(page, langOpt) {
+    var p = isAllowedPage_(page) ? page : 'index';
+    var l = langOpt ? normalizeLang_(langOpt) : getLang_();
+    return '?page=' + encodeURIComponent(p) + '&lang=' + encodeURIComponent(l);
+  }
+
+  /* -------------------------------------------------------------
+   * ROBUST gate: block non-ja direct access to SCTA
+   * ----------------------------------------------------------- */
+  function enforceSctaGate_() {
+    var lang = getLang_();
+    var page = getPage_();
+    if (page === 'scta' && lang !== 'ja') {
+      // hard redirect to index (keep current lang)
+      try { location.replace(href_('index', lang)); } catch (_) { location.href = href_('index', lang); }
+      return false;
+    }
+    return true;
+  }
+
+  /* -------------------------------------------------------------
+   * i18n getter (SSoT)
+   * ----------------------------------------------------------- */
+  function t_(path, langOpt) {
+    var I18N = window.I18N;
+    if (!I18N) return '';
+
+    var lang = langOpt ? normalizeLang_(langOpt) : getLang_();
+
+    var parts = String(path || '').split('.');
+    var node = I18N;
+    for (var p = 0; p < parts.length; p++) {
+      if (!hasOwn_(node, parts[p])) return '';
+      node = node[parts[p]];
+    }
+
+    if (typeof node === 'string') return node;
+    if (node && typeof node === 'object') {
+      if (hasOwn_(node, lang) && node[lang] != null) return str_(node[lang]);
+      if (hasOwn_(node, 'en') && node.en != null) return str_(node.en);
+    }
+    return '';
+  }
+
+  /* -------------------------------------------------------------
+   * Routing helpers (normalize internal links containing "?page=")
+   * - absolute URLs are normalized ONLY if same-host
+   * ----------------------------------------------------------- */
+  function isSameHost_(href) {
+    try {
+      if (!href) return false;
+      if (href.indexOf('?page=') === 0) return true; // relative internal
+      if (href.indexOf('http://') !== 0 && href.indexOf('https://') !== 0) return false;
+      var a = document.createElement('a');
+      a.href = href;
+      return (a.host && location && a.host === location.host);
+    } catch (_) { return false; }
+  }
+
+  function rewriteLinkToCanonical_(a) {
+    var h = str_(a.getAttribute('href'));
+    if (!h) return;
+    if (h.indexOf('?page=') < 0) return;
+    if (!isSameHost_(h) && h.indexOf('?page=') !== 0) return;
+
+    var idx = h.indexOf('?page=');
+    var sub = (idx >= 0) ? h.substring(idx) : h;
+
+    var m = sub.match(/[?&]page=([^&]+)/i);
+    var p = (m && m[1]) ? decodeURIComponent(String(m[1])) : 'index';
+
+    a.setAttribute('href', href_(p));
+  }
+
+  function normalizeHrefAll_() {
+    var links = document.querySelectorAll('a[href]');
+    for (var i = 0; i < links.length; i++) {
+      rewriteLinkToCanonical_(links[i]);
+    }
+  }
+
+  // CLICK-TIME canonicalization (covers dynamic links)
+  function bindClickCanonical_() {
+    if (bindClickCanonical_._bound) return;
+    bindClickCanonical_._bound = true;
+
+    document.addEventListener('click', function (ev) {
+      try {
+        var t = ev.target;
+        // climb up to <a>
+        while (t && t !== document && t.nodeType === 1) {
+          if (t.tagName && String(t.tagName).toUpperCase() === 'A') break;
+          t = t.parentNode;
+        }
+        if (!t || !t.tagName || String(t.tagName).toUpperCase() !== 'A') return;
+
+        var h = str_(t.getAttribute('href'));
+        if (!h) return;
+        if (h.indexOf('?page=') < 0) return;
+        if (!isSameHost_(h) && h.indexOf('?page=') !== 0) return;
+
+        // rewrite to canonical before navigation
+        rewriteLinkToCanonical_(t);
+      } catch (_) {}
+    }, true); // capture phase: before browser navigation
+  }
+
+  function bindRouting_() {
+    var nodes = document.querySelectorAll('[data-page]');
+    for (var i = 0; i < nodes.length; i++) {
+      (function (el) {
+        var p = el.getAttribute('data-page');
+        if (!p) return;
+        el.onclick = function () { location.href = href_(p); };
+      })(nodes[i]);
+    }
+    normalizeHrefAll_();
+    bindClickCanonical_();
+  }
+
+  /* -------------------------------------------------------------
+   * Apply UI i18n (+ placeholder)
+   * ----------------------------------------------------------- */
+  function applyI18n_() {
+    var nodes = document.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var key = el.getAttribute('data-i18n');
+      if (!key) continue;
+
+      var mode = el.getAttribute('data-i18n-mode');
+      var txt = t_(key);
+
+      if (mode === 'placeholder') {
+        try { el.setAttribute('placeholder', txt); } catch (_) {}
+      } else {
+        // NOTE: known behavior: textContent overwrite (do NOT put data-i18n on elements with children)
+        el.textContent = txt;
+      }
+    }
+  }
+
+  /* -------------------------------------------------------------
+   * Lang panel label: show CURRENT language name (override any fixed key)
+   * ----------------------------------------------------------- */
+  function updateLangPanelLabel_() {
+    var lab = document.querySelector('.lang-panel .label');
+    if (!lab) return;
+
+    var I18N = window.I18N;
+    var current = getLang_();
+
+    // Prefer I18N.ui.languages[current] if available; else fallback to code
+    var name = '';
+    try {
+      if (I18N && I18N.ui && I18N.ui.languages && typeof I18N.ui.languages === 'object') {
+        var labels = I18N.ui.languages;
+        if (hasOwn_(labels, current) && labels[current] != null) name = String(labels[current]);
+      }
+    } catch (_) {}
+
+    lab.textContent = name || current;
+  }
+
+  /* -------------------------------------------------------------
+   * Apply legal (English SSoT)
+   * ----------------------------------------------------------- */
+  function applyLegal_() {
+    var I18N = window.I18N;
+    if (!I18N || !I18N.legal || !I18N.legal.en) return;
+    var nodes = document.querySelectorAll('[data-i18n-legal]');
+    for (var i = 0; i < nodes.length; i++) {
+      var k = nodes[i].getAttribute('data-i18n-legal');
+      if (k && I18N.legal.en[k]) nodes[i].textContent = String(I18N.legal.en[k]);
+    }
+  }
+
+  /* -------------------------------------------------------------
+   * Visibility rules (JPY/USD + SCTA)
+   * ----------------------------------------------------------- */
+  function applyVisibility_() {
+    var isJa = (getLang_() === 'ja');
+
+    function toggle(sel, on) {
+      var els = document.querySelectorAll(sel);
+      for (var i = 0; i < els.length; i++) els[i].style.display = on ? '' : 'none';
+    }
+
+    toggle('[data-lang-only="ja"]', isJa);
+    toggle('[data-lang-only="non-ja"]', !isJa);
+    toggle('[data-currency="JPY"]', isJa);
+    toggle('[data-currency="USD"]', !isJa);
+
+    // Hide SCTA links when non-ja (robust selector: any href containing "page=scta")
+    var links = document.querySelectorAll('a[href]');
+    for (var j = 0; j < links.length; j++) {
+      var hh = str_(links[j].getAttribute('href'));
+      if (hh.indexOf('page=scta') >= 0) links[j].style.display = isJa ? '' : 'none';
+    }
+  }
+
+  /* -------------------------------------------------------------
+   * Language selector (#langSelect) — 8 fixed order ALWAYS
+   * ----------------------------------------------------------- */
+  function renderLangSelect_() {
+    var sel = document.getElementById('langSelect');
+    var I18N = window.I18N;
+    if (!sel) return;
+
+    var labels = (I18N && I18N.ui && I18N.ui.languages && typeof I18N.ui.languages === 'object')
+      ? I18N.ui.languages
+      : null;
+
+    sel.innerHTML = '';
+    var current = getLang_();
+
+    for (var i = 0; i < LANGS_.length; i++) {
+      var code = LANGS_[i];
+      var opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = (labels && hasOwn_(labels, code)) ? String(labels[code]) : code;
+      if (code === current) opt.selected = true;
+      sel.appendChild(opt);
+    }
+
+    sel.onchange = function () {
+      var l = setLang_(sel.value);
+      var p = getPage_();
+      location.href = href_(p, l);
+    };
+  }
+
+  /* -------------------------------------------------------------
+   * Chat minimal (DOM matches style: .msg > .role + .text)
+   * - Role labels are language-neutral (no i18n dependency)
+   * ----------------------------------------------------------- */
+  function initChat_() {
+    var input = document.getElementById('chatInput');
+    var send = document.getElementById('chatSend');
+    var log = document.getElementById('chatLog');
+    if (!input || !send) return;
+
+    function append_(role, text) {
+      if (!log) return;
+
+      var wrap = document.createElement('div');
+      wrap.className = 'msg ' + role;
+
+      var r = document.createElement('div');
+      r.className = 'role';
+      r.textContent = (role === 'user') ? 'USER' : 'ASSISTANT';
+
+      var t = document.createElement('div');
+      t.className = 'text';
+      t.textContent = str_(text);
+
+      wrap.appendChild(r);
+      wrap.appendChild(t);
+
+      log.appendChild(wrap);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    send.onclick = function () {
+      var msg = str_(input.value).trim();
+      if (!msg) return;
+      input.value = '';
+      append_('user', msg);
+
+      google.script.run
+        .withSuccessHandler(function (r) {
+          try {
+            var o = JSON.parse(String(r || ''));
+            append_('assistant', (o && o.reply) ? o.reply : 'Error');
+          } catch (_) { append_('assistant', 'Error'); }
+        })
+        .withFailureHandler(function () { append_('assistant', 'Error'); })
+        .apiChat(JSON.stringify({ message: msg, history: [] }));
+    };
+  }
+
+  /* -------------------------------------------------------------
+   * Boot
+   * ----------------------------------------------------------- */
+  function boot_() {
+    // 1) hard gate first (ROBUST SCTA)
+    if (!enforceSctaGate_()) return;
+
+    // 2) routing canonicalization (+ click-time canonicalization)
+    bindRouting_();
+
+    // 3) selector first (so UI reflects current lang)
+    renderLangSelect_();
+
+    // 4) i18n apply (known textContent overwrite behavior)
+    applyI18n_();
+
+    // 5) override lang panel label to CURRENT language name
+    updateLangPanelLabel_();
+
+    // 6) legal + visibility + chat
+    applyLegal_();
+    applyVisibility_();
+    initChat_();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot_);
+  } else {
+    boot_();
+  }
+})();
+</script>
