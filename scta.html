@@ -1,0 +1,136 @@
+<!-- =========================================================
+ FILE: scta.html
+ - createTemplateFromFile('scta') 用（ベース名完全一致）
+ - include は style / i18n / scripts のみ
+========================================================= -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <?!= include('style'); ?>
+  <?!= include('i18n'); ?>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-badge" aria-hidden="true"></div>
+      <span data-i18n="ui.appTitle"></span>
+    </div>
+
+    <nav class="nav" aria-label="nav">
+      <a href="<?= webAppUrl ?>?page=index<?= lang ? ('&lang=' + lang) : '' ?>" data-i18n="ui.navHome"></a>
+      <a href="<?= webAppUrl ?>?page=chat<?= lang ? ('&lang=' + lang) : '' ?>" data-i18n="ui.navChat"></a>
+      <a href="<?= webAppUrl ?>?page=legal_en<?= lang ? ('&lang=' + lang) : '' ?>" data-i18n="ui.navLegal"></a>
+      <a href="<?= webAppUrl ?>?page=scta<?= lang ? ('&lang=' + lang) : '' ?>" data-i18n="ui.navScta"></a>
+      <a href="<?= webAppUrl ?>?page=contact<?= lang ? ('&lang=' + lang) : '' ?>" data-i18n="ui.navContact"></a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h1 class="h1">特定商取引法に基づく表記</h1>
+
+    <div class="kv">
+      <div class="kv-row">
+        <div class="kv-k">事業者名</div>
+        <div class="kv-v">みらい相談室（Mirai Counseling Room）</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">運営責任者</div>
+        <div class="kv-v">泉田 公世（Kosei Izumida）</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">所在地</div>
+        <div class="kv-v">〒970-0224 福島県いわき市平豊間字榎町202-2</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">電話番号</div>
+        <div class="kv-v">0246-88-7369（日本語のみ対応）</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">メールアドレス</div>
+        <div class="kv-v">fukushima-iwaki@miraicounselingroom.com</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">公式HP</div>
+        <div class="kv-v">
+          <a href="https://mirai-sodan.com" target="_blank" rel="noopener">https://mirai-sodan.com</a>
+        </div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">販売価格（税抜）</div>
+        <div class="kv-v">
+          基本プラン：月額 3,000円（60時間）<br>
+          追加オプション：2,000円（20時間ごと）<br>
+          上限：最大80時間／月
+        </div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">商品代金以外の必要料金</div>
+        <div class="kv-v">通信料等はお客様のご負担となります。</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">お支払い方法</div>
+        <div class="kv-v">クレジットカード決済（Stripe）</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">提供時期</div>
+        <div class="kv-v">決済完了後、直ちにご利用いただけます。</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">解約</div>
+        <div class="kv-v">次回更新日の前日までに所定の方法で解約手続きを行うことで、次回以降の請求を停止します。</div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">返金</div>
+        <div class="kv-v">
+          サービスの性質上、原則として返金には応じておりません。<br>
+          ただし、重複決済・明らかな決済不具合等、個別事情がある場合はお問い合わせください。
+        </div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">動作環境</div>
+        <div class="kv-v">
+          最新版の主要ブラウザ（Chrome / Safari / Edge / Firefox）を推奨します。<br>
+          通信環境により動作が不安定になる場合があります。
+        </div>
+      </div>
+
+      <div class="kv-row">
+        <div class="kv-k">準拠法・裁判管轄</div>
+        <div class="kv-v">
+          日本法に準拠し、紛争が生じた場合はいわき簡易裁判所または福島地方裁判所を第一審の専属的合意管轄裁判所とします。
+        </div>
+      </div>
+    </div>
+
+    <div class="mt10">
+      <a class="btn" href="<?= webAppUrl ?>?page=index<?= lang ? ('&lang=' + lang) : '' ?>">戻る</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <small>© Mirai Counseling Room</small>
+  </footer>
+</main>
+
+<?!= include('scripts'); ?>
+</body>
+</html>

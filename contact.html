@@ -1,0 +1,423 @@
+<script>
+/* =====================================================================
+ * scripts.html — Minimal Working Core (NO BALLOONS) [FULL/CLOSED]
+ * - Routing: ALWAYS "?page=xxx&lang=yy"
+ * - i18n: supports
+ *    - data-i18n + (data-i18n-mode) OR (data-i18n-attr)
+ *      data-i18n-attr="placeholder|value|html|text|title|aria-label"
+ * - Legal: data-i18n-legal="termsFull|privacyFull" -> I18N.legal.en.*
+ * - Visibility:
+ *    - data-lang-only="ja|non-ja"
+ *    - data-currency="JPY|USD"
+ *    - SCTA nav hidden when lang!=ja
+ * - Chat: google.script.run.apiChat
+ * - Contact: google.script.run.apiContact
+ * ===================================================================== */
+(function () {
+  'use strict';
+
+  function hasOwn_(o, k) { return !!(o && Object.prototype.hasOwnProperty.call(o, k)); }
+  function str_(v) { return (v === null || v === undefined) ? '' : String(v); }
+
+  // --- Lang (query > localStorage > default en)
+  function getLang_() {
+    try {
+      var qs = (location && location.search) ? location.search : '';
+      var m = qs.match(/[?&]lang=([a-z]{2})/i);
+      if (m && m[1]) return String(m[1]).toLowerCase();
+    } catch (e1) {}
+    try {
+      var ls = localStorage.getItem('mirai_lang');
+      if (ls) return String(ls).toLowerCase();
+    } catch (e2) {}
+    return 'en';
+  }
+  function setLang_(lang) {
+    var l = String(lang || '').toLowerCase();
+    try { localStorage.setItem('mirai_lang', l); } catch (e) {}
+    return l;
+  }
+
+  // --- i18n getter (expects window.I18N from i18n.html)
+  function t_(path, langOpt) {
+    var I18N = window.I18N;
+    if (!I18N) return '';
+    var lang = langOpt ? String(langOpt).toLowerCase() : getLang_();
+    if (!I18N.ui || !I18N.ui.languages || !hasOwn_(I18N.ui.languages, lang)) lang = 'en';
+
+    var parts = String(path || '').split('.');
+    var node = I18N;
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      if (!p || !hasOwn_(node, p)) return '';
+      node = node[p];
+    }
+
+    if (typeof node === 'string') return node;
+    if (node && typeof node === 'object') {
+      if (hasOwn_(node, lang) && node[lang] != null) return str_(node[lang]);
+      if (hasOwn_(node, 'en') && node.en != null) return str_(node.en);
+    }
+    return '';
+  }
+
+  // --- Hard allow-list pages (MUST match Code.gs)
+  function isAllowedPage_(p) {
+    return (p === 'index' || p === 'chat' || p === 'policy' || p === 'legal_en' || p === 'scta' || p === 'contact');
+  }
+
+  // --- Route key -> page name (canonical)
+  function page_(key) {
+    var map = (window.I18N && window.I18N.route && window.I18N.route.pages) ? window.I18N.route.pages : null;
+    var p = map ? str_(map[key]) : '';
+    if (!isAllowedPage_(p)) return 'index';
+    return p;
+  }
+
+  // --- Build href: ALWAYS "?page=" + "&lang="
+  function href_(pageName) {
+    var p = str_(pageName);
+    if (!isAllowedPage_(p)) p = 'index';
+    return '?page=' + encodeURIComponent(p) + '&lang=' + encodeURIComponent(getLang_());
+  }
+
+  // --- Rewrite existing nav links (?page=xxx) to always include &lang=
+  function normalizeHrefAll_() {
+    var as = document.querySelectorAll('a[href]');
+    for (var i = 0; i < as.length; i++) {
+      var a = as[i];
+      var h = a.getAttribute('href');
+      if (!h) continue;
+
+      if (h.indexOf('?page=') === 0) {
+        var m = h.match(/^\?page=([^&]+)/);
+        var p = (m && m[1]) ? decodeURIComponent(m[1]) : '';
+        if (!isAllowedPage_(p)) p = 'index';
+        a.setAttribute('href', href_(p));
+      }
+    }
+  }
+
+  // --- Routing binder
+  function bindRouting_() {
+    function setHref_(el, pageName) {
+      var h = href_(pageName);
+      if ((el.tagName || '').toLowerCase() === 'a') {
+        el.setAttribute('href', h);
+      } else {
+        el.style.cursor = 'pointer';
+        el.onclick = function () { location.href = h; };
+      }
+    }
+
+    // data-page (direct page name)
+    var a = document.querySelectorAll('[data-page]');
+    for (var i = 0; i < a.length; i++) {
+      var dp = a[i].getAttribute('data-page');
+      if (dp) setHref_(a[i], dp);
+    }
+
+    // data-route (canonical key -> page)
+    var b = document.querySelectorAll('[data-route]');
+    for (var j = 0; j < b.length; j++) {
+      var rk = b[j].getAttribute('data-route');
+      if (rk) setHref_(b[j], page_(rk));
+    }
+
+    // id rescue (optional)
+    var ids = {
+      navHome: page_('home'),
+      navChat: page_('chat'),
+      navPrivacy: page_('privacy'),
+      navLegal: page_('legal'),
+      navScta: page_('scta'),
+      navContact: page_('contact')
+    };
+    for (var k in ids) {
+      if (!hasOwn_(ids, k)) continue;
+      var el = document.getElementById(k);
+      if (el) setHref_(el, ids[k]);
+    }
+
+    // CTA rescue (optional)
+    var cta = document.getElementById('ctaChat') || document.getElementById('startBtn');
+    if (cta) setHref_(cta, 'chat');
+
+    normalizeHrefAll_();
+  }
+
+  // --- Apply translations
+  // Priority: data-i18n-attr (attribute mapping) > data-i18n-mode > default textContent
+  function applyI18n_() {
+    var nodes = document.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var key = el.getAttribute('data-i18n');
+      if (!key) continue;
+
+      var val = t_(key);
+
+      var attr = el.getAttribute('data-i18n-attr'); // e.g. placeholder
+      if (attr) {
+        var a = String(attr).toLowerCase();
+        if (a === 'html') el.innerHTML = val;
+        else if (a === 'text') el.textContent = val;
+        else if (a === 'value') el.value = val;
+        else el.setAttribute(attr, val); // placeholder/title/aria-label etc
+        continue;
+      }
+
+      var mode = el.getAttribute('data-i18n-mode') || 'text';
+      if (mode === 'html') el.innerHTML = val;
+      else if (mode === 'placeholder') el.setAttribute('placeholder', val);
+      else if (mode === 'value') el.value = val;
+      else el.textContent = val;
+    }
+  }
+
+  // --- Apply legal texts
+  function applyLegal_() {
+    var I18N = window.I18N;
+    if (!I18N || !I18N.legal || !I18N.legal.en) return;
+
+    var nodes = document.querySelectorAll('[data-i18n-legal]');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var key = el.getAttribute('data-i18n-legal');
+      if (!key) continue;
+      var val = hasOwn_(I18N.legal.en, key) ? str_(I18N.legal.en[key]) : '';
+      el.textContent = val;
+    }
+  }
+
+  // --- Enforce JPY/USD + SCTA visibility rules (NO dual currency)
+  function applyVisibility_() {
+    var lang = getLang_();
+    var isJa = (lang === 'ja');
+
+    var jaOnly = document.querySelectorAll('[data-lang-only="ja"]');
+    for (var i = 0; i < jaOnly.length; i++) jaOnly[i].style.display = isJa ? '' : 'none';
+
+    var nonJaOnly = document.querySelectorAll('[data-lang-only="non-ja"]');
+    for (var j = 0; j < nonJaOnly.length; j++) nonJaOnly[j].style.display = isJa ? 'none' : '';
+
+    var curJPY = document.querySelectorAll('[data-currency="JPY"]');
+    for (var k = 0; k < curJPY.length; k++) curJPY[k].style.display = isJa ? '' : 'none';
+
+    var curUSD = document.querySelectorAll('[data-currency="USD"]');
+    for (var m = 0; m < curUSD.length; m++) curUSD[m].style.display = isJa ? 'none' : '';
+
+    // Hide SCTA nav when non-ja (SCTA(JPY) must not appear)
+    var navLinks = document.querySelectorAll('a[href]');
+    for (var n = 0; n < navLinks.length; n++) {
+      var a = navLinks[n];
+      var h = a.getAttribute('href') || '';
+      if (h.indexOf('?page=scta') === 0) a.style.display = isJa ? '' : 'none';
+    }
+  }
+
+  // --- Lang dropdown: never [object Object]
+  function renderLangSelect_() {
+    var sel = document.getElementById('langSelect');
+    var I18N = window.I18N;
+    if (!sel || !I18N || !I18N.ui) return;
+
+    while (sel.firstChild) sel.removeChild(sel.firstChild);
+
+    var current = getLang_();
+    var codes = I18N.ui.languages || {}; // MUST be string map
+
+    for (var code in codes) {
+      if (!hasOwn_(codes, code)) continue;
+
+      var opt = document.createElement('option');
+      opt.value = code;
+
+      var label = '';
+      if (I18N.ui.languageNames && I18N.ui.languageNames[code] && typeof I18N.ui.languageNames[code] === 'object') {
+        var obj = I18N.ui.languageNames[code];
+        if (obj && obj[current] != null) label = String(obj[current]);
+        else if (obj && obj.en != null) label = String(obj.en);
+      }
+      if (!label) label = String((codes[code] != null) ? codes[code] : code);
+
+      opt.textContent = label;
+      if (String(code).toLowerCase() === current) opt.selected = true;
+      sel.appendChild(opt);
+    }
+
+    sel.onchange = function () {
+      var l = setLang_(sel.value);
+
+      var qs = (location && location.search) ? location.search : '';
+      qs = qs.replace(/([?&])lang=[a-z]{2}(&?)/ig, function (_m, p1, p2) {
+        return (p1 === '?' && p2) ? '?' : p1;
+      });
+      qs = qs.replace(/[?&]$/, '');
+
+      var base = (location && location.pathname) ? location.pathname : '';
+      var out = base + (qs || '');
+      out += (out.indexOf('?') >= 0 ? '&' : '?') + 'lang=' + encodeURIComponent(l);
+      location.href = out;
+    };
+  }
+
+  // --- Chat
+  function initChat_() {
+    var input = document.getElementById('chatInput');
+    var send = document.getElementById('chatSend');
+    if (!input || !send) return;
+
+    var log = document.getElementById('chatLog'); // optional
+    function append_(role, text) {
+      if (!log) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'msg ' + role;
+      wrap.textContent = str_(text);
+      log.appendChild(wrap);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function getHistory_() {
+      try {
+        var s = sessionStorage.getItem('mirai_chat_history');
+        var a = s ? JSON.parse(s) : [];
+        return (a && a.length) ? a : [];
+      } catch (e) { return []; }
+    }
+    function setHistory_(h) {
+      try { sessionStorage.setItem('mirai_chat_history', JSON.stringify(h || [])); } catch (e) {}
+    }
+
+    function doSend_() {
+      var msg = str_(input.value).trim();
+      if (!msg) return;
+
+      input.value = '';
+      append_('user', msg);
+
+      var history = getHistory_();
+      history.push({ role: 'user', content: msg });
+      if (history.length > 20) history = history.slice(history.length - 20);
+
+      var payload = JSON.stringify({ message: msg, history: history });
+
+      send.disabled = true;
+
+      google.script.run
+        .withSuccessHandler(function (resJson) {
+          send.disabled = false;
+          var out;
+          try { out = JSON.parse(String(resJson || '')); } catch (e) { out = null; }
+
+          if (!out || !out.ok) {
+            append_('assistant', t_('ui.error') || 'An error occurred');
+            return;
+          }
+
+          var reply = str_(out.reply || '');
+          append_('assistant', reply);
+
+          history.push({ role: 'assistant', content: reply });
+          if (history.length > 20) history = history.slice(history.length - 20);
+          setHistory_(history);
+        })
+        .withFailureHandler(function (_err) {
+          send.disabled = false;
+          append_('assistant', t_('ui.error') || 'An error occurred');
+        })
+        .apiChat(payload);
+    }
+
+    send.onclick = doSend_;
+    input.addEventListener('keydown', function (e) {
+      if (e && e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        doSend_();
+      }
+    });
+  }
+
+  // --- Contact
+  // Requires: #cClientId #cName #cEmail #cMsg #contactSend
+  function initContact_() {
+    var btn = document.getElementById('contactSend');
+    var msg = document.getElementById('cMsg');
+    if (!btn || !msg) return;
+
+    var cClientId = document.getElementById('cClientId');
+    var cName = document.getElementById('cName');
+    var cEmail = document.getElementById('cEmail');
+
+    function setBtn_(text, disabled) {
+      btn.disabled = !!disabled;
+      if (text != null) btn.textContent = String(text);
+    }
+
+    function doSend_() {
+      var payload = {
+        clientId: cClientId ? str_(cClientId.value).trim() : '',
+        name: cName ? str_(cName.value).trim() : '',
+        email: cEmail ? str_(cEmail.value).trim() : '',
+        message: str_(msg.value).trim()
+      };
+
+      if (!payload.message) return;
+
+      var prevText = btn.textContent;
+      setBtn_(prevText, true);
+
+      google.script.run
+        .withSuccessHandler(function (resJson) {
+          setBtn_(prevText, false);
+
+          var out;
+          try { out = JSON.parse(String(resJson || '')); } catch (e) { out = null; }
+          if (!out || !out.ok) {
+            setBtn_(t_('ui.error') || 'An error occurred', false);
+            return;
+          }
+
+          // clear message only (keep optional identifiers)
+          msg.value = '';
+
+          // feedback: Sent -> restore
+          setBtn_(t_('ui.contactSent') || 'Sent', true);
+          setTimeout(function () { setBtn_(prevText, false); }, 900);
+        })
+        .withFailureHandler(function (_err) {
+          setBtn_(t_('ui.error') || 'An error occurred', false);
+        })
+        .apiContact(JSON.stringify(payload));
+    }
+
+    btn.onclick = doSend_;
+    msg.addEventListener('keydown', function (e) {
+      // Ctrl/Cmd+Enter to send (safe for textarea)
+      if (!e) return;
+      var isEnter = (e.key === 'Enter');
+      var mod = !!(e.ctrlKey || e.metaKey);
+      if (isEnter && mod) {
+        e.preventDefault();
+        doSend_();
+      }
+    });
+  }
+
+  function boot_() {
+    bindRouting_();
+    applyI18n_();
+    applyLegal_();
+    renderLangSelect_();
+    applyVisibility_();
+    initChat_();
+    initContact_();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot_);
+  } else {
+    boot_();
+  }
+})();
+</script>
